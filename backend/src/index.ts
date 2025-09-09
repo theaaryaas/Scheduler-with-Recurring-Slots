@@ -24,4 +24,9 @@ app.get('/health', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV}`);
+  console.log(`Database URL: ${process.env.DATABASE_URL ? 'Set' : 'Not set'}`);
+}).on('error', (error) => {
+  console.error('Server failed to start:', error);
+  process.exit(1);
 });
