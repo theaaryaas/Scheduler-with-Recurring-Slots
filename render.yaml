@@ -16,3 +16,4 @@ services:
     name: scheduler-db
     env: postgresql
     plan: free
+    region: oregon
