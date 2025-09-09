@@ -6,7 +6,7 @@ interface SlotModalProps {
   slot?: Slot | null;
   selectedDate?: Date | null;
   onClose: () => void;
-  onSave: (data: CreateSlotRequest | UpdateSlotRequest) => void;
+  onSave: (data: CreateSlotRequest | UpdateSlotRequest) => Promise<void> | void;
 }
 
 export const SlotModal: React.FC<SlotModalProps> = ({

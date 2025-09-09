@@ -50,7 +50,6 @@ export const WeekView: React.FC<WeekViewProps> = ({
       {/* Days of Week */}
       <div className="grid grid-cols-7">
         {weekDays.map((day) => {
-          const isToday = new Date().toDateString() === day.toDateString();
           const isSelected = false; // You can add selection logic here
 
           return (

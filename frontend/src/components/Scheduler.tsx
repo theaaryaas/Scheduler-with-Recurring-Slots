@@ -142,10 +142,13 @@ export const Scheduler: React.FC = () => {
           slot={selectedSlot}
           selectedDate={selectedDate}
           onClose={() => setIsModalOpen(false)}
-          onSave={selectedSlot ? 
-            (data) => handleUpdateSlot(selectedSlot.id, data as { start_time?: string; end_time?: string }) : 
-            handleCreateSlot
-          }
+          onSave={async (data) => {
+            if (selectedSlot) {
+              await handleUpdateSlot(selectedSlot.id, data as { start_time?: string; end_time?: string });
+            } else {
+              await handleCreateSlot(data as CreateSlotRequest);
+            }
+          }}
         />
       )}
     </div>
