@@ -1,4 +1,6 @@
-module.exports = {
+import { Knex } from 'knex';
+
+const config: { [key: string]: Knex.Config } = {
   development: {
     client: 'postgresql',
     connection: {
@@ -23,3 +25,5 @@ module.exports = {
     }
   }
 };
+
+export default config;
