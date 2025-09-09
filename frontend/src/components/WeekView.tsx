@@ -17,7 +17,6 @@ export const WeekView: React.FC<WeekViewProps> = ({
   const weekDays = eachDayOfInterval({ start: weekStart, end: weekEnd });
 
   const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-  const dayNamesFull = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   return (
     <div className="bg-white rounded-lg shadow-sm border">
@@ -50,7 +49,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
 
       {/* Days of Week */}
       <div className="grid grid-cols-7">
-        {weekDays.map((day, index) => {
+        {weekDays.map((day) => {
           const isToday = new Date().toDateString() === day.toDateString();
           const isSelected = false; // You can add selection logic here
 

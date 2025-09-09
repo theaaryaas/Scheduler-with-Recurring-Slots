@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { format, startOfWeek, endOfWeek, addWeeks, subWeeks, eachDayOfInterval, isToday, isSameDay } from 'date-fns';
+import { format, startOfWeek, endOfWeek, addWeeks, subWeeks, eachDayOfInterval, isToday } from 'date-fns';
 import { WeekView } from './WeekView';
 import { DaySlots } from './DaySlots';
 import { SlotModal } from './SlotModal';
@@ -9,7 +9,7 @@ import { Slot, CreateSlotRequest } from '../types/slot';
 export const Scheduler: React.FC = () => {
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [slots, setSlots] = useState<{ [date: string]: Slot[] }>({});
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -143,7 +143,7 @@ export const Scheduler: React.FC = () => {
           selectedDate={selectedDate}
           onClose={() => setIsModalOpen(false)}
           onSave={selectedSlot ? 
-            (data) => handleUpdateSlot(selectedSlot.id, data) : 
+            (data) => handleUpdateSlot(selectedSlot.id, data as { start_time?: string; end_time?: string }) : 
             handleCreateSlot
           }
         />

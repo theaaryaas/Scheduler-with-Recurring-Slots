@@ -1,5 +1,5 @@
 import React from 'react';
-import { format, isToday } from 'date-fns';
+import { format } from 'date-fns';
 import { Slot } from '../types/slot';
 
 interface DaySlotsProps {
