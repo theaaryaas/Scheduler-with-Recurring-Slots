@@ -8,20 +8,20 @@ const config: { [key: string]: Knex.Config } = {
       ssl: { rejectUnauthorized: false }
     },
     migrations: {
-      directory: './migrations'
+      directory: __dirname + '/migrations'
     },
     seeds: {
-      directory: './seeds'
+      directory: __dirname + '/seeds'
     }
   },
   production: {
     client: 'postgresql',
     connection: process.env.DATABASE_URL,
     migrations: {
-      directory: './migrations'
+      directory: __dirname + '/migrations'
     },
     seeds: {
-      directory: './seeds'
+      directory: __dirname + '/seeds'
     }
   }
 };
