@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { SlotService } from '../services/slotService';
-import { DemoSlotService } from '../demo-service';
 import { z } from 'zod';
 
 const router = Router();
