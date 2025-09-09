@@ -7,8 +7,6 @@ import { slotApi } from '../services/api';
 import { Slot, CreateSlotRequest } from '../types/slot';
 
 export const Scheduler: React.FC = () => {
-  console.log('Scheduler component is rendering');
-  
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [slots, setSlots] = useState<{ [date: string]: Slot[] }>({});
   const [loading, setLoading] = useState(false);
