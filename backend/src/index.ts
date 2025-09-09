@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import { slotsRouter } from './routes/slots';
 import knex from 'knex';
-import config from '../knexfile';
+import config from './knexfile';
 
 dotenv.config();
 
