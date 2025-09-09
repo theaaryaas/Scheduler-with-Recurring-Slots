@@ -12,8 +12,6 @@ services:
         fromDatabase:
           name: scheduler-db
           property: connectionString
-  - type: pserv
-    name: scheduler-db
-    env: postgresql
+databases:
+  - name: scheduler-db
     plan: free
-    region: oregon
