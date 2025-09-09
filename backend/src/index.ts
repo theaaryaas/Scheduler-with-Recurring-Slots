@@ -20,7 +20,7 @@ app.use(express.json());
 app.use('/api/slots', slotsRouter);
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', (req: any, res: any) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
@@ -41,7 +41,7 @@ async function startServer() {
       console.log(`Server running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV}`);
       console.log(`Database URL: ${process.env.DATABASE_URL ? 'Set' : 'Not set'}`);
-    }).on('error', (error) => {
+    }).on('error', (error: any) => {
       console.error('Server failed to start:', error);
       process.exit(1);
     });

@@ -114,11 +114,9 @@ export class SlotService {
         .insert({
           day_of_week: slot.day_of_week,
           start_time: slot.start_time,
-          end_time: slot.end_time,
+          end_time: slot.start_time, // Mark as deleted by setting end_time to start_time
           specific_date: specificDate,
-          is_recurring: false,
-          // Mark as deleted by setting end_time to start_time
-          end_time: slot.start_time
+          is_recurring: false
         });
     } else {
       // Delete the exception slot

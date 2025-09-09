@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { SlotService } from '../services/slotService';
 import { z } from 'zod';
 
@@ -19,7 +19,7 @@ const updateSlotSchema = z.object({
 });
 
 // Create a new slot
-router.post('/', async (req, res) => {
+router.post('/', async (req: Request, res: Response) => {
   try {
     const validatedData = createSlotSchema.parse(req.body);
     const slot = await slotService.createSlot(validatedData);
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
 });
 
 // Get slots for a week
-router.get('/week', async (req, res) => {
+router.get('/week', async (req: Request, res: Response) => {
   try {
     const { start_date, end_date } = req.query;
     
@@ -54,7 +54,7 @@ router.get('/week', async (req, res) => {
 });
 
 // Update a slot
-router.put('/:id', async (req, res) => {
+router.put('/:id', async (req: Request, res: Response) => {
   try {
     const slotId = parseInt(req.params.id);
     const validatedData = updateSlotSchema.parse(req.body);
@@ -73,7 +73,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a slot
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const slotId = parseInt(req.params.id);
     await slotService.deleteSlot(slotId);
