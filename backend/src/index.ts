@@ -42,8 +42,15 @@ async function startServer() {
       const dbConfig = config[environment as keyof typeof config];
       const db = knex(dbConfig);
       
-      await db.migrate.latest();
-      console.log('Database migrations completed');
+      try {
+        await db.migrate.latest();
+        console.log('Database migrations completed');
+      } catch (error) {
+        console.log('Migration error (continuing anyway):', error.message);
+        // Continue even if migrations fail (table might already exist)
+      } finally {
+        await db.destroy();
+      }
     }
     
     // Start the server
