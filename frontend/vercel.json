@@ -16,5 +16,7 @@
   ],
   "env": {
     "VITE_API_URL": "https://scheduler-backend.onrender.com"
-  }
+  },
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"
 }

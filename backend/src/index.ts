@@ -5,8 +5,10 @@ import dotenv from 'dotenv';
 import { slotsRouter } from './routes/slots';
 import knex from 'knex';
 import config from './knexfile';
+import path from 'path';
 
-dotenv.config();
+// Load .env from backend directory
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -27,14 +29,22 @@ app.get('/health', (req: any, res: any) => {
 // Initialize database and start server
 async function startServer() {
   try {
-    // Run database migrations
-    console.log('Running database migrations...');
-    const environment = process.env.NODE_ENV || 'development';
-    const dbConfig = config[environment as keyof typeof config];
-    const db = knex(dbConfig);
+    console.log('SKIP_DB value:', process.env.SKIP_DB);
+    console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Set' : 'Not set');
     
-    await db.migrate.latest();
-    console.log('Database migrations completed');
+    // Skip database migrations for local testing without DB
+    if (process.env.SKIP_DB === 'true') {
+      console.log('Skipping database migrations for local testing...');
+    } else {
+      // Run database migrations
+      console.log('Running database migrations...');
+      const environment = process.env.NODE_ENV || 'development';
+      const dbConfig = config[environment as keyof typeof config];
+      const db = knex(dbConfig);
+      
+      await db.migrate.latest();
+      console.log('Database migrations completed');
+    }
     
     // Start the server
     app.listen(PORT, () => {
