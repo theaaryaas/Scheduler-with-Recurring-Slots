@@ -50,12 +50,17 @@ export const Scheduler: React.FC = () => {
   };
 
   const handleCreateSlot = async (slotData: CreateSlotRequest) => {
+    console.log('handleCreateSlot called with:', slotData);
     try {
-      await slotApi.createSlot(slotData);
+      console.log('Calling slotApi.createSlot...');
+      const result = await slotApi.createSlot(slotData);
+      console.log('Slot created successfully:', result);
       loadSlots(weekStart, weekEnd);
       setIsModalOpen(false);
+      console.log('Modal closed, slots reloaded');
     } catch (error) {
       console.error('Failed to create slot:', error);
+      setError('Failed to create slot. Please try again.');
     }
   };
 

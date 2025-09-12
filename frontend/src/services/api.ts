@@ -36,7 +36,10 @@ api.interceptors.response.use(
 
 export const slotApi = {
   createSlot: async (slotData: CreateSlotRequest): Promise<Slot> => {
+    console.log('API: Creating slot with data:', slotData);
+    console.log('API: Making request to:', API_BASE_URL + '/api/slots');
     const response = await api.post('/api/slots', slotData);
+    console.log('API: Response received:', response.data);
     return response.data;
   },
 

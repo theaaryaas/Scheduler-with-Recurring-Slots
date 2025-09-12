@@ -49,24 +49,30 @@ export const SlotModal: React.FC<SlotModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted!', { startTime, endTime, slot, selectedDate });
     
     if (!validateForm()) {
+      console.log('Form validation failed');
       return;
     }
 
     if (slot) {
       // Update existing slot
+      console.log('Updating existing slot');
       onSave({
         start_time: startTime,
         end_time: endTime,
       });
     } else if (selectedDate) {
       // Create new slot
+      console.log('Creating new slot for day:', selectedDate.getDay());
       onSave({
         day_of_week: selectedDate.getDay(),
         start_time: startTime,
         end_time: endTime,
       });
+    } else {
+      console.log('No slot or selectedDate provided');
     }
   };
 
