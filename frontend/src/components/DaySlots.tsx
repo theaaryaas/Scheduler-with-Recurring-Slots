@@ -34,7 +34,10 @@ export const DaySlots: React.FC<DaySlotsProps> = ({
         </div>
         {canAddSlot && (
           <button
-            onClick={onAddSlot}
+            onClick={() => {
+              console.log('Add slot button clicked!');
+              onAddSlot();
+            }}
             className="p-2 rounded-full bg-purple-100 text-purple-600 hover:bg-purple-200 transition-colors"
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,7 +56,10 @@ export const DaySlots: React.FC<DaySlotsProps> = ({
             <p className="mt-2 text-sm">No slots scheduled</p>
             {canAddSlot && (
               <button
-                onClick={onAddSlot}
+                onClick={() => {
+                  console.log('Add first slot button clicked!');
+                  onAddSlot();
+                }}
                 className="mt-2 text-purple-600 hover:text-purple-700 text-sm font-medium"
               >
                 Add your first slot

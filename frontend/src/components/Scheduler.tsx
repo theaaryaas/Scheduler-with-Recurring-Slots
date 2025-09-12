@@ -79,9 +79,11 @@ export const Scheduler: React.FC = () => {
   };
 
   const handleAddSlot = (date: Date) => {
+    console.log('handleAddSlot called with date:', date);
     setSelectedDate(date);
     setSelectedSlot(null);
     setIsModalOpen(true);
+    console.log('Modal should be open now, isModalOpen:', true);
   };
 
   const handleEditSlot = (slot: Slot) => {
