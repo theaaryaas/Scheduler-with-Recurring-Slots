@@ -46,7 +46,7 @@ async function startServer() {
         await db.migrate.latest();
         console.log('Database migrations completed');
       } catch (error) {
-        console.log('Migration error (continuing anyway):', error.message);
+        console.log('Migration error (continuing anyway):', error instanceof Error ? error.message : String(error));
         // Continue even if migrations fail (table might already exist)
       } finally {
         await db.destroy();
