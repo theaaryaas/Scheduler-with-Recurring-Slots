@@ -22,6 +22,6 @@
     }
   ],
   "env": {
-    "VITE_API_URL": "https://scheduler-backend.onrender.com"
+    "VITE_API_URL": "https://scheduler-backend-mse6.onrender.com"
   }
 }
