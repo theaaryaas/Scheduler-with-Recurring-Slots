@@ -5,68 +5,72 @@ export class SlotService {
   async createSlot(slotData: CreateSlotRequest): Promise<Slot> {
     const [slot] = await db('slots')
       .insert({
-        ...slotData,
-        is_recurring: true
+        day_of_week: slotData.day_of_week,
+        start_time: slotData.start_time,
+        end_time: slotData.end_time,
+        category: slotData.category || 'General',
+        is_recurring: true,
+        specific_date: null
       })
       .returning('*');
-    
+
     return slot;
   }
 
   async getSlotsForWeek(startDate: string, endDate: string): Promise<WeekSlotsResponse> {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    
-    // Get recurring slots
-    const recurringSlots = await db('slots')
-      .where('is_recurring', true)
-      .select('*');
-
-    // Get exception slots for the date range
-    const exceptionSlots = await db('slots')
-      .where('is_recurring', false)
-      .whereBetween('specific_date', [startDate, endDate])
-      .select('*');
-
-    const weekSlots: WeekSlotsResponse = {};
-
-    // Generate dates for the week
-    const currentDate = new Date(start);
-    while (currentDate <= end) {
-      const dateStr = currentDate.toISOString().split('T')[0];
-      const dayOfWeek = currentDate.getDay();
+    try {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
       
-      weekSlots[dateStr] = [];
+      const weekSlots: WeekSlotsResponse = {};
 
-      // Add recurring slots for this day of week
-      const dayRecurringSlots = recurringSlots.filter(slot => slot.day_of_week === dayOfWeek);
-      
-      // Add exception slots for this specific date
-      const dayExceptionSlots = exceptionSlots.filter(slot => slot.specific_date === dateStr);
+      // Generate dates for the week
+      const currentDate = new Date(start);
+      while (currentDate <= end) {
+        const dateStr = currentDate.toISOString().split('T')[0];
+        const dayOfWeek = currentDate.getDay();
+        
+        weekSlots[dateStr] = [];
 
-      // Combine and deduplicate (exceptions override recurring)
-      const allSlots = [...dayRecurringSlots, ...dayExceptionSlots];
-      
-      // Remove duplicates based on time (exceptions take precedence)
-      const uniqueSlots = allSlots.reduce((acc, slot) => {
-        const key = `${slot.start_time}-${slot.end_time}`;
-        if (!acc.has(key)) {
-          acc.set(key, slot);
+        try {
+          // Get recurring slots for this day of week
+          const dayRecurringSlots = await db('slots')
+            .where({ day_of_week: dayOfWeek, is_recurring: true });
+          
+          // Get exception slots for this specific date
+          const dayExceptionSlots = await db('slots')
+            .where({ specific_date: dateStr, is_recurring: false });
+
+          // Combine and deduplicate (exceptions override recurring)
+          const allSlots = [...dayRecurringSlots, ...dayExceptionSlots];
+          
+          // Remove duplicates based on time (exceptions take precedence)
+          const uniqueSlots = allSlots.reduce((acc, slot) => {
+            const key = `${slot.start_time}-${slot.end_time}`;
+            if (!acc.has(key)) {
+              acc.set(key, slot);
+            }
+            return acc;
+          }, new Map());
+
+          weekSlots[dateStr] = Array.from(uniqueSlots.values());
+        } catch (error) {
+          console.error('Error fetching slots for date:', dateStr, error);
+          weekSlots[dateStr] = [];
         }
-        return acc;
-      }, new Map());
 
-      weekSlots[dateStr] = Array.from(uniqueSlots.values());
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
 
-      currentDate.setDate(currentDate.getDate() + 1);
+      return weekSlots;
+    } catch (error) {
+      console.error('Error in getSlotsForWeek:', error);
+      throw error;
     }
-
-    return weekSlots;
   }
 
   async updateSlot(slotId: number, updateData: UpdateSlotRequest): Promise<Slot> {
-    // First, get the original slot
-    const originalSlot = await db('slots').where('id', slotId).first();
+    const originalSlot = await db('slots').where({ id: slotId }).first();
     
     if (!originalSlot) {
       throw new Error('Slot not found');
@@ -77,22 +81,28 @@ export class SlotService {
       const specificDate = new Date().toISOString().split('T')[0];
       
       // Create exception slot
-      const [exceptionSlot] = await db('slots')
-        .insert({
-          day_of_week: originalSlot.day_of_week,
-          start_time: updateData.start_time || originalSlot.start_time,
-          end_time: updateData.end_time || originalSlot.end_time,
-          specific_date: specificDate,
-          is_recurring: false
-        })
-        .returning('*');
+             const [exceptionSlot] = await db('slots')
+               .insert({
+                 day_of_week: originalSlot.day_of_week,
+                 start_time: updateData.start_time || originalSlot.start_time,
+                 end_time: updateData.end_time || originalSlot.end_time,
+                 category: updateData.category || originalSlot.category,
+                 specific_date: specificDate,
+                 is_recurring: false
+               })
+               .returning('*');
 
       return exceptionSlot;
     } else {
       // Update existing exception slot
       const [updatedSlot] = await db('slots')
-        .where('id', slotId)
-        .update(updateData)
+        .where({ id: slotId })
+        .update({
+          start_time: updateData.start_time || originalSlot.start_time,
+          end_time: updateData.end_time || originalSlot.end_time,
+          category: updateData.category || originalSlot.category,
+          updated_at: new Date()
+        })
         .returning('*');
 
       return updatedSlot;
@@ -100,7 +110,7 @@ export class SlotService {
   }
 
   async deleteSlot(slotId: number): Promise<void> {
-    const slot = await db('slots').where('id', slotId).first();
+    const slot = await db('slots').where({ id: slotId }).first();
     
     if (!slot) {
       throw new Error('Slot not found');
@@ -120,7 +130,7 @@ export class SlotService {
         });
     } else {
       // Delete the exception slot
-      await db('slots').where('id', slotId).del();
+      await db('slots').where({ id: slotId }).del();
     }
   }
 }

@@ -10,6 +10,13 @@ import path from 'path';
 // Load .env from backend directory
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
+// Set environment variables explicitly for development
+if (process.env.NODE_ENV !== 'production') {
+  process.env.DATABASE_URL = process.env.DATABASE_URL || 'postgresql://postgres.nxssvrmabftmdlcckoqx:07SEP2001aa!@aws-1-ap-south-1.pooler.supabase.com:6543/postgres';
+  process.env.PORT = process.env.PORT || '3001';
+  process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+}
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -29,24 +36,18 @@ app.get('/health', (req: any, res: any) => {
 // Initialize database and start server
 async function startServer() {
   try {
-    console.log('SKIP_DB value:', process.env.SKIP_DB);
-    console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Set' : 'Not set');
-    
     // Skip database migrations for local testing without DB
-    if (process.env.SKIP_DB === 'true') {
-      console.log('Skipping database migrations for local testing...');
+    if (process.env.SKIP_DB === 'true' || process.env.SKIP_DB === 'false') {
     } else {
       // Run database migrations
-      console.log('Running database migrations...');
       const environment = process.env.NODE_ENV || 'development';
       const dbConfig = config[environment as keyof typeof config];
       const db = knex(dbConfig);
       
       try {
         await db.migrate.latest();
-        console.log('Database migrations completed');
       } catch (error) {
-        console.log('Migration error (continuing anyway):', error instanceof Error ? error.message : String(error));
+        console.error('Migration error (continuing anyway):', error instanceof Error ? error.message : String(error));
         // Continue even if migrations fail (table might already exist)
       } finally {
         await db.destroy();
@@ -56,8 +57,6 @@ async function startServer() {
     // Start the server
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV}`);
-      console.log(`Database URL: ${process.env.DATABASE_URL ? 'Set' : 'Not set'}`);
     }).on('error', (error: any) => {
       console.error('Server failed to start:', error);
       process.exit(1);

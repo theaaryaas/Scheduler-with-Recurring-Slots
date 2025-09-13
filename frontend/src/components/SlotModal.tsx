@@ -17,15 +17,27 @@ export const SlotModal: React.FC<SlotModalProps> = ({
 }) => {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [category, setCategory] = useState('General');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const categories = [
+    { value: 'Work', color: 'bg-blue-100 text-blue-800 border-blue-200' },
+    { value: 'Personal', color: 'bg-green-100 text-green-800 border-green-200' },
+    { value: 'Health', color: 'bg-red-100 text-red-800 border-red-200' },
+    { value: 'Education', color: 'bg-purple-100 text-purple-800 border-purple-200' },
+    { value: 'Social', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
+    { value: 'General', color: 'bg-gray-100 text-gray-800 border-gray-200' }
+  ];
 
   useEffect(() => {
     if (slot) {
       setStartTime(slot.start_time);
       setEndTime(slot.end_time);
+      setCategory(slot.category || 'General');
     } else {
       setStartTime('');
       setEndTime('');
+      setCategory('General');
     }
     setErrors({});
   }, [slot]);
@@ -49,30 +61,27 @@ export const SlotModal: React.FC<SlotModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted!', { startTime, endTime, slot, selectedDate });
     
     if (!validateForm()) {
-      console.log('Form validation failed');
       return;
     }
 
     if (slot) {
       // Update existing slot
-      console.log('Updating existing slot');
       onSave({
         start_time: startTime,
         end_time: endTime,
+        category: category,
       });
     } else if (selectedDate) {
       // Create new slot
-      console.log('Creating new slot for day:', selectedDate.getDay());
       onSave({
         day_of_week: selectedDate.getDay(),
         start_time: startTime,
         end_time: endTime,
+        category: category,
       });
     } else {
-      console.log('No slot or selectedDate provided');
     }
   };
 
@@ -124,6 +133,23 @@ export const SlotModal: React.FC<SlotModalProps> = ({
               {errors.endTime && (
                 <p className="mt-1 text-sm text-red-600">{errors.endTime}</p>
               )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Category
+              </label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="input-field"
+              >
+                {categories.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.value}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {!isEditing && (

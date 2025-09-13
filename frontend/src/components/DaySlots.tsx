@@ -21,6 +21,18 @@ export const DaySlots: React.FC<DaySlotsProps> = ({
 }) => {
   const canAddSlot = slots.length < 2;
 
+  const getCategoryColor = (category: string) => {
+    const colors = {
+      'Work': 'bg-blue-100 text-blue-800 border-blue-200',
+      'Personal': 'bg-green-100 text-green-800 border-green-200',
+      'Health': 'bg-red-100 text-red-800 border-red-200',
+      'Education': 'bg-purple-100 text-purple-800 border-purple-200',
+      'Social': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      'General': 'bg-gray-100 text-gray-800 border-gray-200'
+    };
+    return colors[category as keyof typeof colors] || colors.General;
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm border p-4">
       <div className="flex items-center justify-between mb-4">
@@ -35,7 +47,6 @@ export const DaySlots: React.FC<DaySlotsProps> = ({
         {canAddSlot && (
           <button
             onClick={() => {
-              console.log('Add slot button clicked!');
               onAddSlot();
             }}
             className="p-2 rounded-full bg-purple-100 text-purple-600 hover:bg-purple-200 transition-colors"
@@ -57,7 +68,6 @@ export const DaySlots: React.FC<DaySlotsProps> = ({
             {canAddSlot && (
               <button
                 onClick={() => {
-                  console.log('Add first slot button clicked!');
                   onAddSlot();
                 }}
                 className="mt-2 text-purple-600 hover:text-purple-700 text-sm font-medium"
@@ -76,6 +86,9 @@ export const DaySlots: React.FC<DaySlotsProps> = ({
                 <div className="text-sm font-medium text-gray-900">
                   {slot.start_time} - {slot.end_time}
                 </div>
+                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(slot.category || 'General')}`}>
+                  {slot.category || 'General'}
+                </span>
                 {slot.is_recurring && (
                   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                     Recurring

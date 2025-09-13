@@ -118,20 +118,42 @@ This will start both the frontend (http://localhost:3000) and backend (http://lo
 
 ### Backend (Render)
 1. Connect your GitHub repository to Render
-2. Set environment variables:
-   - `DATABASE_URL` - Your PostgreSQL connection string
-   - `NODE_ENV` - Set to "production"
-3. Deploy
+2. Create a new Web Service
+3. Set the following:
+   - **Build Command**: `cd backend && npm install && npm run build`
+   - **Start Command**: `cd backend && node dist/index.js`
+   - **Environment**: Node
+4. Set environment variables:
+   - `NODE_ENV` = `production`
+   - `PORT` = `10000`
+   - `DATABASE_URL` = Your PostgreSQL connection string (from Render PostgreSQL)
+   - `SKIP_DB` = `false`
+5. Deploy
 
 ### Frontend (Vercel)
 1. Connect your GitHub repository to Vercel
-2. Set environment variables:
-   - `VITE_API_URL` - Your backend API URL
-3. Deploy
+2. Set the following:
+   - **Framework Preset**: Vite
+   - **Root Directory**: `frontend`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+3. Set environment variables:
+   - `VITE_API_URL` = `https://your-backend-url.onrender.com`
+4. Deploy
+
+### Frontend (Netlify)
+1. Connect your GitHub repository to Netlify
+2. Set the following:
+   - **Base directory**: `frontend`
+   - **Build command**: `npm run build`
+   - **Publish directory**: `frontend/dist`
+3. Set environment variables:
+   - `VITE_API_URL` = `https://your-backend-url.onrender.com`
+4. Deploy
 
 ### Database (Render PostgreSQL)
 1. Create a new PostgreSQL service on Render
-2. Use the connection string as your `DATABASE_URL`
+2. Use the connection string as your `DATABASE_URL` in the backend service
 
 ## Usage
 
