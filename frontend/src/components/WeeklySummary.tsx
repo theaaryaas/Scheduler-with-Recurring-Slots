@@ -1,4 +1,3 @@
-import React from 'react';
 import { format, eachDayOfInterval, startOfWeek, endOfWeek } from 'date-fns';
 import { Slot } from '../types/slot';
 

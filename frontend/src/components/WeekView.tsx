@@ -1,4 +1,3 @@
-import React from 'react';
 import { format, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns';
 
 interface WeekViewProps {
