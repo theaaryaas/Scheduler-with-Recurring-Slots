@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "tsc --project tsconfig.build.json && vite build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "framework": "vite",
