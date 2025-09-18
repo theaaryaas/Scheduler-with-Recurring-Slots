@@ -3,18 +3,33 @@ import { Slot, CreateSlotRequest, UpdateSlotRequest, WeekSlotsResponse } from '.
 
 export class SlotService {
   async createSlot(slotData: CreateSlotRequest): Promise<Slot> {
-    const [slot] = await db('slots')
-      .insert({
+    try {
+      console.log('Inserting slot data:', {
         day_of_week: slotData.day_of_week,
         start_time: slotData.start_time,
         end_time: slotData.end_time,
         category: slotData.category || 'General',
         is_recurring: true,
         specific_date: null
-      })
-      .returning('*');
+      });
 
-    return slot;
+      const [slot] = await db('slots')
+        .insert({
+          day_of_week: slotData.day_of_week,
+          start_time: slotData.start_time,
+          end_time: slotData.end_time,
+          category: slotData.category || 'General',
+          is_recurring: true,
+          specific_date: null
+        })
+        .returning('*');
+
+      console.log('Slot inserted successfully:', slot);
+      return slot;
+    } catch (error) {
+      console.error('Database insert error:', error);
+      throw new Error(`Failed to create slot: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 
   async getSlotsForWeek(startDate: string, endDate: string): Promise<WeekSlotsResponse> {

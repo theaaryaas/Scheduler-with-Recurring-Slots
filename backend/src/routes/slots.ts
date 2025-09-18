@@ -23,14 +23,26 @@ const updateSlotSchema = z.object({
 // Create a new slot
 router.post('/', async (req: Request, res: Response) => {
   try {
+    console.log('Creating slot with data:', req.body);
     const validatedData = createSlotSchema.parse(req.body);
+    console.log('Validated data:', validatedData);
+    
     const slot = await slotService.createSlot(validatedData);
+    console.log('Slot created successfully:', slot);
     res.status(201).json(slot);
   } catch (error) {
+    console.error('Slot creation error:', error);
+    
     if (error instanceof z.ZodError) {
+      console.error('Validation error:', error.errors);
       res.status(400).json({ error: 'Invalid input data', details: error.errors });
     } else {
-      res.status(500).json({ error: 'Internal server error' });
+      console.error('Database error:', error);
+      res.status(500).json({ 
+        error: 'Internal server error', 
+        message: error instanceof Error ? error.message : 'Unknown error',
+        details: process.env.NODE_ENV === 'development' ? error : undefined
+      });
     }
   }
 });
